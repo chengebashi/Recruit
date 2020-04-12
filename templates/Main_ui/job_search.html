@@ -1,0 +1,121 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+    <!-- Main container starts -->
+    <div class="container main-container" id="main-container">
+        <h3 class="font-weight-light text-center mt-3">智能匹配<span class="text-template-primary">搜索</span>结果</h3>
+        <p class="text-template-primary text-center mb-5">Smart match search results</p>
+        <div>
+            <div style="display: flex">
+                <div class="alert alert-primary" role="alert" style="flex: 1">
+                    <span>当前岗位：</span><span>{{ title_list[0] }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div style="opacity: 0">123</div>
+                <div class="alert alert-secondary" role="alert" style="flex: 1">
+                    <span>当前城市：</span><span>{{ title_list[1] }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            </div>
+            <div style="display: flex;">
+                <div class="alert alert-success" role="alert" style="flex: 1">
+                    <span>工作经验：</span><span>{{ title_list[3] }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div style="opacity: 0;">123</div>
+                <div class="alert alert-danger" role="alert" style="flex: 1">
+                    <span>学 历：</span><span>{{ title_list[2] }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            </div>
+
+
+        </div>
+        {% if infolist %}
+        <div class="page-subtitle" style="font-size: 18px">已经为您匹配到以下岗位</div>
+        <div class="row">
+
+            {% for i in infolist %}
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4">
+                <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                    <div class="card-header border-0 bg-none overlay-header">
+                        <div class="row">
+                            <div class="col">
+                                <span style="float: left" class="btn btn-rounded btn-sm text-white bg-light"><i class="material-icons">ac_unit</i> Trending</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-img h-200  position-relative">
+                        <figure class="background">
+                            {% if '#' in i[1] %}
+                                <img src="../../static/assets/JobHead/C1.jpg" alt="">
+                            {% else %}
+                                <img src="../../static/assets/JobHead/{{ i[1] }}.jpg" alt="">
+                            {% endif %}
+                        </figure>
+                    </div>
+                    <form method="post" target="_blank" action="/job_analy/{{ i[0] }}">
+                        <input style="display: none" type="hidden" name="compannyName" value="{{ i[8] }}">
+                        <input style="display: none" type="hidden" name="city" value="{{ title_list[1] }}">
+                        <input style="display: none" type="hidden" name="jobName" value="{{ i[1] }}">
+                        <div class="card-body" style="text-align: left">
+                            <a style="display:none" class="fs15 text-template-primary-light"><span style="font-size: 20px;">职位ID:&nbsp</span>
+                                <button type="button" style="font-size: 16px" id="uid" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[0] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="fs15 text-template-primary-light"><span style="font-size: 20px;">职位名称:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[1] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">所在城市:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ title_list[1] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">工作经验:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[2] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">要求学历:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[3] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">月薪范围:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[4] }}K</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">公司名称:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[8] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">公司规模:&nbsp</span>
+                                <button type="button" style="font-size: 16px" class="mb-2 btn btn-sm btn-light text-template-primary-light">{{ i[7] }}</button>
+                            </a>
+                            <a style="display: block;margin-bottom: 2px;" class="text-template-primary-light fs13"><span style="font-size: 20px">职位标签:&nbsp</span>
+                                {% for j in i[5] %}
+                                <button style="font-size: 16px" type="button" class="job_style mb-2 btn btn-sm btn-light text-template-primary-light">{{ j }}</button>
+                                {% endfor %}
+                            </a>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-sm btn-outline-template"><i class="material-icons">equalizer</i><span>数据分析</span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% else %}
+            <div style="font-size: 30px;margin-top: 80px;" class="text-template-primary">抱歉！由于数据资源有限，暂未为您匹配到合适内容。</div>
+        {% endif %}
+
+    </div>
+    <!-- Main container ends -->
+
+
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

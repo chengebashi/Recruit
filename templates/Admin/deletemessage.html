@@ -1,0 +1,151 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+    <!-- Main container starts -->
+    <div class="container main-container" style="max-width: 1000px" id="main-container">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header p-0 overflow-hidden">
+                <div class="row no-gutters align-items-center position-relative gradient-pink">
+                    <figure class="background opac">
+                        <img src="../../static/assets/img/background-part.png" alt="" class="" >
+                    </figure>
+                    <div class="container p-4">
+                        <div class="row align-items-center ">
+                            <div class="col-12 col-sm-auto text-center">
+                                <a style="cursor: pointer">
+                                    <figure class="avatar avatar-150 rounded-circle mx-auto my-3">
+                                        <img src="{{ imgpath }}" alt="">
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="col-12 col-sm text-center text-sm-left text-white">
+                                <h3 class="mb-0" id="uname">{{uname}}</h3>
+                                <p class="">普通用户</p>
+                                <p ><a href="/" type="button" class="mb-2 mr-2 btn-rounded-circle shadow btn btn-primary"><i style="margin-top: 5px;" class="material-icons">home</i></a><i class="material-icons vm mr-2 fs15">mail_outline</i><span id="email">{{email}}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div style="width: 80%;margin: 0 auto">
+                    <h6 style="margin-top: 50px!important;font-size: 20px;" class="page-subtitle mt-0"><span>我的留言</span></h6>
+                    {% if message2 %}
+                    {%  for i in message2 %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header border-bottom">
+                            <div class="media">
+                                <figure class="avatar avatar-40 mr-2">
+                                    <img src="{{ i[2] }}" alt="Generic placeholder image">
+                                </figure>
+                                <div class="media-body" style="flex: none">
+                                    <h6 class="mb-1" style="text-align: left">{{i[1]}}</h6>
+                                    <p class="mb-0 text-template-primary-light small">{{ i[3] }} | 公开</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body message_list" style="text-align: left;margin: 0 20px">
+
+                        </div>
+                        <div class="card-footer border-top py-2">
+                            <div class="row">
+                                <div class="col">
+                                    <button id="{{i[0]}}" class="btn btn-link btn-sm text-template-primary-light deletemessage"  data-toggle="modal" data-target="#DELETE"><i class="material-icons text-danger">delete</i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {%else%}
+                        <h6 style="margin-top: 50px!important;font-size: 20px;margin-bottom: 80px" ><span>不好意思，您还没发布过留言呢</span></h6>
+                    {%endif%}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+                    <!--弹窗-->
+    <div class="alert alert-danger" id="alert" style="width: 300px;text-align: center;position: fixed;z-index: 99;top: 100px;left: 40%;display: none"></div>
+    <!-- Main container ends -->
+
+    <!--弹窗-->
+    <div class="modal fade" id="DELETE" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div style="border: 1px solid #1fc96e66" class="modal-content bg-success text-white">
+                <div class="modal-header  border-0">
+                    <h5 class="modal-title" id="exampleModalLabel2">温馨提示</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center">
+                    <img src="../../static/assets/img/power.png" style="width: 40px">
+                    <p style="font-size: 16px;margin-top: 7px">确定要删除吗？</p>
+                </div>
+                <div class="modal-footer border-0" style="padding-top: 5px;">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="ok">确定</button>
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        var f=document.querySelectorAll('.message_list');
+        console.log(f);
+        var messages = {{message2|safe}}
+        for (var i=0;i<f.length;i++){
+            f[i].innerHTML = messages[i][4];
+        }
+
+
+        $(".deletemessage").click(function () {
+            var ID = $(this).attr('id');
+            var data_data = JSON.stringify({'id':ID});
+            $("#ok").click(function () {
+                $.ajax({
+                    type:'POST',
+                    contentType:'application/json;charset=utf-8',
+                    dataType:'json',
+                    url:'/admin/deletemessage',
+                    data:data_data,
+                    success:function (data) {
+                        if (data.err===0){
+                            $("#alert").html('留言删除成功!');
+                            $("#alert").fadeIn(1000);
+                            $("#alert").fadeOut(4000);
+                            setTimeout(function () {
+                                window.location.reload()
+                            },3000);
+
+                        }
+                        else{
+                            $("#alert").html(data.err);
+                            $("#alert").fadeIn(1000);
+                            $("#alert").fadeOut(4000);
+                        }
+                    },
+                    error:function () {}
+                })
+            })
+        });
+
+
+    })
+</script>
+
+{% endblock %}

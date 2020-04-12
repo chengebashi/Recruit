@@ -1,0 +1,94 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+    <!-- Main container starts -->
+    <div class="container main-container" style="max-width: 1000px;margin-bottom: 200px" id="main-container">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header p-0 overflow-hidden">
+                <div class="row no-gutters align-items-center position-relative gradient-pink">
+                    <figure class="background opac">
+                        <img src="../../static/assets/img/background-part.png" alt="" class="" >
+                    </figure>
+                    <div class="container p-4">
+                        <div class="row align-items-center ">
+                            <div class="col-12 col-sm-auto text-center">
+                                <a style="cursor: pointer">
+                                    <figure class="avatar avatar-150 rounded-circle mx-auto my-3">
+                                        <img src="{{ imgpath }}" alt="">
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="col-12 col-sm text-center text-sm-left text-white">
+                                <h3 class="mb-0" id="username">{{uname}}</h3>
+                                <p class="">普通用户</p>
+                                <p ><a href="/" type="button" class="mb-2 mr-2 btn-rounded-circle shadow btn btn-primary"><i style="margin-top: 5px;" class="material-icons">home</i></a><i class="material-icons vm mr-2 fs15">mail_outline</i><span id="email">{{email}}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;margin: 20px;font-size: 25px;">上传头像</div>
+            <div class="card-body" style="width: 60%;margin: 0 auto;margin-bottom: 200px;">
+                <div class="custom-dropzone text-center align-items-center dz-clickable" id="my-dropzone">
+                    <figure class="avatar avatar-150 rounded-circle mx-auto my-3" id="fig" style="display: none">
+                        <img id="img" src="" alt="">
+                    </figure>
+                    <label for="upload">
+                        <input accept="image/png,image/gif,image/jpeg" type="file" id="upload" style="display: none">
+                        <div class="dz-default dz-message" data-dz-message="">
+                            <h3 class="mt-3"><i class="material-icons">cloud_upload</i></h3>
+                            <p>在此上传头像</p>
+                        </div>
+                    </label>
+                    <button style="display: none;margin: 0 auto;margin-top: 15px" id="sendimg" type="button" class="mb-2 btn btn-outline-warning">上传</button>
+                </div>
+            </div>
+        </div>
+                <!--弹窗-->
+    <div class="alert alert-danger" id="alert" style="width: 300px;text-align: center;position: fixed;z-index: 99;top: 100px;left: 40%;display: none"></div>
+    <!-- Main container ends -->
+
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            $("#sendimg").click(function () {
+                var img = $("#img")[0].src;
+                var data_data = JSON.stringify({'img':img});
+                $.ajax({
+                    type:'POST',
+                    contentType:'application/json;charset=utf-8',
+                    dataType:'json',
+                    url:'/admin/updatehead',
+                    data:data_data,
+                    success:function (data) {
+                        if(data.err === 0){
+                            $("#alert").html('上传成功');
+                            $("#alert").fadeIn(1000);
+                            $("#alert").fadeOut(4000);
+                            setTimeout(function () {
+                                window.location.replace('/admin/updatehead');
+                            },3000);
+                        }
+                        else{
+                            $("#alert").html(data.err);
+                            $("#alert").fadeIn(1000);
+                            $("#alert").fadeOut(4000);
+                        }
+                    },
+                    error:function () {}
+                })
+            });
+        })
+    </script>
+{% endblock %}

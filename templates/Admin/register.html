@@ -1,0 +1,220 @@
+{% extends 'Admin/base.html' %}
+
+{% block title %}
+    系统注册
+{% endblock %}
+
+{% block body %}
+
+<body class="h-100 no-sidemenu">
+    <div class="loader container-fluid">
+        <div class="row h-100">
+            <div class="col-auto align-self-center  mx-auto text-center">
+                <div class="loader-ripple"><div></div><div></div></div>
+                <h2>加载中</h2>
+                <p>来杯热茶~</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrapper">
+        <div class="content shadow-sm position-relative">
+            <header class="header">
+                <!-- Fixed navbar -->
+                <nav class="container-fluid">
+                    <div class="row">
+                        <div class="col align-self-center">
+                            <a href="" class="logo text-white">
+                                <img src="../../static/assets/img/logoicon.svg" alt="" class="logo-icon">
+                                <div class="logo-text">
+                                    <h5 class="fs22 mb-0">招聘信息网 <sup class="badge badge-danger">精准</sup></h5>
+                                    <p class="text-uppercase fs11">实时掌握大数据</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col text-right align-self-center">
+                            <a href="/admin/login" class="btn btn-sm btn-primary text-uppercase">登 陆</a>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div class="background opac">
+                <img src="../../static/assets/img/p_big3.jpg" alt="">
+            </div>
+
+            <!-- Main container starts -->
+            <div class="container main-container" id="main-container">
+                <div class="row login-row-height">
+                    <div class="col-12 col-md-6 col-lg-7 d-none d-md-flex"></div>
+                    <div class="col-12 col-md-6 col-lg-5 col-xl-4  align-self-center">
+                        <div class="card border-0 shadow-lg blur">
+                            <div class="card-body py-5">
+                                <h5 class="font-weight-light mb-1 text-mute-high">DO YOU WANT JOIN US</h5>
+                                <h3 class="font-weight-normal mb-4">Please Register</h3>
+                                <div class="card  mb-2 overflow-hidden">
+                                    <div class="card-body p-0">
+                                        <label for="inputusername" class="sr-only">用 户 名</label>
+                                        <input type="text" id="inputusername" class="form-control rounded-0 border-0" placeholder="用户名" required="" autofocus="">
+                                        <label for="inputEmail" class="sr-only">邮 箱</label>
+                                        <input type="email" id="inputEmail" class="form-control rounded-0 border-0" placeholder="邮箱" required="" >
+                                        <hr class="my-0">
+                                        <label for="inputPassword" class="sr-only">密 码</label>
+                                        <input type="password" id="inputPassword" class="form-control rounded-0 border-0" placeholder="密码" required="">
+                                        <hr class="my-0">
+                                    </div>
+                                </div>
+                                <div class="my-3 row">
+                                    <div class="col-12 py-1">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
+                                            <label class="custom-control-label" for="customCheck1">同意本站信息不向外泄露协议</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="text-left mb-4">
+                                    <a href=javascript:void(0) id="doregister" class=" btn btn-primary btn-block">注 册<i class="material-icons md-18">arrow_forward</i></a>
+                                </div>
+
+                                <div class="">
+                                    <p class="text-mute">
+                                        已经有账号？<br>
+                                        点击这里<a href="/admin/login" class="template-primary">登 陆</a>
+                                    </p>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--弹窗-->
+            <div class="alert alert-danger" id="alert" style="width: 300px;text-align: center;position: fixed;z-index: 99;top: 100px;left: 40%;opacity: 0">
+                    This is a danger alert—check it out!
+            </div>
+
+            <!-- Main container ends -->
+        </div>
+        <footer class="footer" style="opacity: 0">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-md text-center text-md-left align-self-center">
+                        <p>All rights reserved by <a href="http://www.bootstrapmb.com/">Maxartkiller</a></p>
+                    </div>
+                    <div class="col-12 col-md-auto text-center text-md-right">
+                        <ul class="nav justify-content-center justify-md-content-end">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Terms of use</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Privacy Policy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contactus.html">Contact us</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</body>
+
+{% endblock %}
+
+{% block login %}
+    <script>
+        $(function () {
+            var flag_username = false;
+            var flag_email = false;
+            var flag_password = false;
+            $("#inputusername").change(function () {
+                var username_value = $("#inputusername").val();
+                if(username_value.length===0||username_value.length>10||username_value.indexOf(" ")!=-1){
+                    $("#alert").text('用户名不能为空或长度超过10或密码中有空格！');
+                    $("#alert").css('opacity','0.82');
+                    flag_username = false;
+                }
+                else{
+                    $("#alert").css('opacity','0');
+                    flag_username = true;
+                }
+            });
+            $("#inputEmail").change(function () {
+                var email_value = $("#inputEmail").val();
+                var re= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if(re.test(email_value)){
+                    $("#alert").css('opacity','0');
+                    flag_email = true;
+                }
+                else{
+                    $("#alert").text('邮箱格式有误！');
+                    $("#alert").css('opacity','0.82');
+                    flag_email = false;
+                }
+            });
+            $("#inputPassword").change(function () {
+                var password = $("#inputPassword").val();
+                    Password = jQuery.trim(password);
+                    passwordLen = Password.length;
+                if (passwordLen===0||passwordLen>16||password.indexOf(" ") != -1){
+                    $("#alert").text('密码不能为空或长度超过16或密码中有空格！');
+                    $("#alert").css('opacity','0.82');
+                    flag_password = false;
+                }
+                else{
+                    $("#alert").css('opacity','0');
+                    flag_password = true;
+                }
+            });
+            $("#doregister").click(function () {
+                if (flag_email&&flag_password&&flag_username){
+                    var usernameValue = $("#inputusername").val();
+                    var emailValue = $("#inputEmail").val();
+                    var passwordValue = $("#inputPassword").val();
+                    data_data = JSON.stringify({'usernameValue':usernameValue,'emailValue':emailValue,'passwordValue':passwordValue});
+                    $.ajax({
+                        type: 'POST',
+                        contentType: 'application/json; charset = UTF-8',
+                        dataType: 'json',
+                        url: '/admin/register',
+                        data: data_data,
+                        success:function (data) {
+                            if (data.err === 0){
+                                //注册成功
+                                window.location.href = '/admin/login';
+                            }
+                            else{
+                                $("#alert").text(data.err);
+                                $("#alert").css('opacity','0.82');
+                            }
+                        },
+                        error:function () {
+                            alert(9999);
+                        }
+                    })
+                }
+                else{
+                    if(!flag_email){
+                        $("#alert").text('邮箱格式有误！');
+                        $("#alert").css('opacity','0.82');
+                    }
+                    if(!flag_password){
+                        $("#alert").text('密码不能为空或长度超过16或密码中有空格！');
+                        $("#alert").css('opacity','0.82');
+                    }
+                    if(!flag_username){
+                        $("#alert").text('用户名不能为空或长度超过10或密码中有空格！');
+                        $("#alert").css('opacity','0.82');
+                    }
+                }
+            });
+        })
+
+    </script>
+{% endblock %}
+

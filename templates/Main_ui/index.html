@@ -1,0 +1,493 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+<!-- Main container starts -->
+<div class="container main-container" id="main-container">
+    <div class="row" style="padding: 0 100px 0 181px">
+        <form method="post" action="/search">
+        <div style="margin: 10px 10px 30px 0;width: 150px" class="c-dropdown js-dropdown">
+            <input type="hidden" name="Framework" id="Framework" class="js-dropdown__input">
+            <span class="c-button c-button--dropdown js-dropdown__current" style="width: 150px;">热门岗位</span>
+            <ul class="c-dropdown__list" style="overflow-y: scroll;height: 300px;">
+                {% for i in jobname %}
+                <li class="c-dropdown__item" data-dropdown-value="{{ i }}" style="letter-spacing: 2px">{{ i }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="c-dropdown js-dropdown">
+            <input type="hidden" name="Framework_2" id="Framework_2" class="js-dropdown__input">
+            <span class="c-button c-button--dropdown js-dropdown__current" style="letter-spacing: 3px;">热门城市</span>
+            <ul class="c-dropdown__list">
+                {% for i in city %}
+                <li class="c-dropdown__item" data-dropdown-value="{{ i }}">{{ i }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="c-dropdown js-dropdown">
+            <input type="hidden" name="Framework_3" id="Framework_3" class="js-dropdown__input">
+            <span class="c-button c-button--dropdown js-dropdown__current" style="letter-spacing: 3px;">学历</span>
+            <ul class="c-dropdown__list">
+                {% for i in gj_xl %}
+                <li class="c-dropdown__item" data-dropdown-value="{{ i }}">{{ i }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="c-dropdown js-dropdown" style="width: 140px;">
+            <input type="hidden" name="Framework_4" id="Framework_4" class="js-dropdown__input">
+            <span class="c-button c-button--dropdown js-dropdown__current"  style="letter-spacing: 3px;width: 140px;max-width: 140px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">工作时间</span>
+            <ul class="c-dropdown__list">
+                {% for i in gj_time %}
+                <li class="c-dropdown__item" data-dropdown-value="{{ i }}" style="letter-spacing: 2px">{{ i }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <button type="submit" id="searchjob" class="mb-2 btn btn-success" style="height: 40px;width: 120px;margin-top: 5px;margin-left: 100px"><i class="material-icons">search</i>&nbsp搜 索</button>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="border-0 shadow-sm mb-4">
+                <div class="card-header border-0 bg-none" style="padding-bottom: 0">
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-template-primary-light" style="font-size:22px;line-height: 40px">热门城市平均月薪动态展示图<small style="float: right;font-size: 12px;" class="text-template-primary-light">随机展示三个职位</small><br></p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-body" style="padding-top: 0">
+                    <br>
+                    <div class="areachart" style="height: 520px;padding-top: 15px;">
+                        <canvas id="mixedchartjs"></canvas>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4" style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="pie-area" style="height: 460px;margin-top: 20px">
+                        <!--<div id="pie-area"></div>-->
+                    </div>
+                    <div class="col-12 col-md">
+                        <p class="text-template-primary-light" style="font-size: 16px;">当前随机选择岗位数据展示</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4"  style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="polar-area" style="height: 460px;margin-top: 20px">
+                        <!--<canvas id="polar-area"></canvas>-->
+                    </div>
+                <div class="col-12 col-md">
+                    <p class="text-template-primary-light" style="font-size: 16px;">当前随机选择岗位数据展示</p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card border-0 shadow-sm overflow-hidden mb-4">
+                <div class="card-header border-0 bg-none">
+                    <div class="row">
+                        <div class="col-12 col-md">
+                            <p class="text-template-primary-light" style="font-size: 22px;">各大职位地区分布图</p>
+                            <!--<small class="text-template-primary-light">This week vs Last week</small>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="maps" style="height: 500px">
+                        <!--<canvas id="maps" style="height: 800px;width:1200px;background:white;"></canvas>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--弹窗-->
+    <div class="alert alert-danger" id="alert" style="width: 300px;text-align: center;position: fixed;z-index: 99;top: 100px;left: 40%;display: none">
+
+    </div>
+</div>
+<!-- Main container ends -->
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(window).on('load', function () {
+
+
+            /* sales area chart */
+            var areachart = document.getElementById('mixedchartjs').getContext('2d');
+            var CITY = {{city | safe}};
+            var money_list = {{money_list | safe}};
+            var line1 = money_list[Math.floor((Math.random() * money_list.length))];
+            var line2 = money_list[Math.floor((Math.random() * money_list.length))];
+            var line3 = money_list[Math.floor((Math.random() * money_list.length))];
+            var line1data = [];
+            var line2data = [];
+            var line3data = [];
+            for (i = 1; i < 12; i++) {
+                line1data.push(line1[i])
+            }
+            for (i = 1; i < 12; i++) {
+                line2data.push(line2[i])
+            }
+            for (i = 1; i < 12; i++) {
+                line3data.push(line3[i])
+            }
+            // console.log(CITY)
+            CITY.splice(-1, 1);
+            var configareachart = {
+                type: 'line',
+                data: {
+                    // labels: ['0', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: CITY,
+                    datasets: [{
+                        label: line1[0],
+                        borderWidth: '2',
+                        // borderColor: '#5B92FF',
+                        borderColor: randomColor(),
+                        backgroundColor: randomfillColor(),
+                        data: line1data,
+                    },
+                        {
+                            label: line2[0],
+                            borderWidth: '2',
+                            // borderColor: '#5B92FF',
+                            borderColor: randomColor(),
+                            backgroundColor: randomfillColor(),
+                            data: line2data,
+                        },
+                        {
+                            label: line3[0],
+                            borderWidth: '2',
+                            // borderColor: '#5B92FF',
+                            borderColor: randomColor(),
+                            backgroundColor: randomfillColor(),
+                            data: line3data,
+                        }
+                    ]
+                },
+                options: {}
+            };
+
+            window.salesareachart = new Chart(areachart, configareachart);
+
+
+            /* dognut chart */
+
+
+            /* line chart large for quarter*/
+
+
+            /* summary box green circle */
+
+
+            /* summary box spark lines  */
+
+
+            /* data Table */
+
+
+            /* jquery vectormap */
+
+
+            /* toast message */
+            // if(location.href.indexOf("#")==-1) {
+            //     //在当前页面地址加入"#"，使下次不再进入此判断
+            //     location.href = location.href + "#";
+            //     location.reload();
+            // }
+
+            if (window.name == "") {
+                $.toast({
+                    heading: '登陆成功!',
+                    text: '<div class="row"><div class="col-auto"><i class="material-icons mr-2">beenhere</i></div><div class="col pl-0"><i class="material-icons text-danger fs13">favorite</i> 新的一天新的希望！</div></div>',
+                    loader: true,
+                    loaderBg: '#ffffff',
+                    bgColor: '#1FC96E',
+                    position: 'bottom-center',
+                });
+                window.name = "0";
+
+            }
+            else {
+                window.name = eval(window.name) + 1;
+                // alert("已经刷新"+ window.name+'次');
+                console.log(1)
+            }
+
+            var dataMap = [{name: '北京'}, {name: '天津'}, {name: '上海'}, {name: '重庆'}, {name: '河北'}, {name: '河南'}, {name: '云南'}, {name: '辽宁'}, {name: '黑龙江'}, {name: '湖南'}, {name: '安徽'}, {name: '山东'},
+                {name: '新疆'}, {name: '江苏'}, {name: '浙江'}, {name: '江西'}, {name: '湖北'}, {name: '广西'}, {name: '甘肃'}, {name: '山西'}, {name: '内蒙古'}, {name: '陕西'}, {name: '吉林'}, {name: '福建'}, {name: '贵州'},
+                {name: '广东'}, {name: '青海'}, {name: '西藏'}, {name: '四川'}, {name: '宁夏'}, {name: '海南'}, {name: '台湾'}, {name: '香港'}, {name: '澳门'}];
+            // 需要在页面上直接标记出来的城市
+            var specialMap = ['北京', '上海', '浙江', '广东', '广东2', '四川', '湖北', '江苏', '福建', '湖南', '天津'];
+            // 对dataMap进行处理，使其可以直接在页面上展示
+            for (var i = 0; i < specialMap.length; i++) {
+                for (var j = 0; j < dataMap.length; j++) {
+                    if (specialMap[i] == dataMap[j].name) {
+                        dataMap[j].selected = true;
+                        break;
+                    }
+                }
+            }
+
+            var city_dict = {};
+            for (var ii =0 ;ii<CITY.length;ii++){
+                city_dict[specialMap[ii]] = CITY[ii];
+            }
+            console.log(city_dict);
+            var money_dict = {};
+            for (var op = 0;op<CITY.length;op++){
+                money_dict[CITY[op]] = line1data[op]
+            }
+            // 绘制图表，准备数据
+            var thecityArr = ['广州','深圳'];
+            var option = {
+                tooltip: {
+                    formatter: function (params) {
+                        var city = params.name;
+                        // if (params.name === '广东' ){
+                        //    city = '广州&深圳'
+                        // }
+                        if (specialMap.includes(city)) {
+                            if (city === '广东') {
+                                var city1 = thecityArr[0];
+                                var city2 = thecityArr[1];
+                                var info = '<p style="font-size:18px">' + city + '</p><p style="font-size:14px">'+city1+'热门求职 > '+line1[0]+':'+money_dict[city1]+'</p><p style="font-size:14px">'+city2+'热门求职 > '+line1[0]+':'+money_dict[city2]+'</p>';
+                            }
+                            else{
+                                var info = '<p style="font-size:18px">' + city + '</p><p style="font-size:14px">'+city_dict[city]+'热门求职 > '+line1[0]+':'+money_dict[city_dict[city]]+'</p>';
+                            }
+
+                        }
+                        else {
+                            var info = '<p style="font-size:18px">' + city + '</p><p style="font-size:14px">暂无职位信息</p>';
+                        }
+                        return info;
+                    },
+                    backgroundColor: "#ff7f59",//提示标签背景颜色
+                    textStyle: {color: "#fff"} //提示标签字体颜色
+                },
+                series: [
+                    {
+                        name: '中国',
+                        type: 'map',
+                        mapType: 'china',
+                        selectedMode: 'multiple',
+                        zoom:1.2,
+                        label: {
+                            normal: {
+                                show: true,//显示省份标签
+                                // textStyle:{color:"#c71585"}//省份标签字体颜色
+                            },
+                            emphasis: {
+                                show: true,//对应的鼠标悬浮效果
+                                // textStyle:{color:"#800080"}
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                borderWidth: .3,//区域边框宽度
+                                borderColor: '#009fe8',//区域边框颜色
+                                areaColor: "#cddcf2",//区域颜色
+                            },
+                            emphasis: {
+                                borderWidth: .5,
+                                borderColor: '#4b0082',
+                                areaColor: "#ffdead",
+                            }
+                        },
+                        data: dataMap
+                    }
+                ]
+            };
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('maps'));
+            //使用制定的配置项和数据显示图表
+            myChart.setOption(option);
+
+
+
+            var label_list = {{labels | safe}};
+            var random_label_json = label_list[Math.floor((Math.random() * label_list.length))];
+            var the_job_name;
+            var data_key = [];
+            for (var p in random_label_json)
+                the_job_name = p;
+            var data_list = random_label_json[p];
+            for (var dd in data_list)
+                data_key.push(data_list[dd].name);
+            // data_value.push(random_label_json[p][dd]);
+            // console.log(data_value);
+            // for (i=0;i<data_key.length;i++){
+            //     data_list.push({value:data_value[i],name:data_key[i]})
+            // }
+            option_1 = {
+                title: {
+                    text: '职位标签词频统计',
+                    subtext: the_job_name,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: data_key
+                },
+                series: [
+                    {
+                        name: '当前数据',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data: data_list,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+
+
+            var tfidf_list = {{tfidf | safe}};
+            var random_tfidf_json = tfidf_list[Math.floor((Math.random() * tfidf_list.length))];
+            var the_job_name_2;
+            var data_key_2 = [];
+            var title_key = [];
+            for (var pp in random_tfidf_json)
+                the_job_name_2 = pp;
+            var data_list_2 = random_tfidf_json[pp];
+            for (var cc in data_list_2)
+                data_key_2.push(data_list_2[cc].name);
+            for (var oo in data_list_2){
+                if (oo>2){
+                    break
+                }
+                else{
+                    title_key.push(data_list_2[oo])
+                }
+            }
+            option_2 = {
+                title: {
+                    text: '岗位TF-IDF值数据分析展示',
+                    subtext: the_job_name_2,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 10,
+                    data: data_key_2
+                },
+                series: [
+                    {
+                        name: 'TF-IDF值占比',
+                        type: 'pie',
+                        selectedMode: 'single',
+                        radius: [0, '30%'],
+                        center:['60%','50%'],
+                        label: {
+                            position: 'inner'
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: title_key
+                    },
+                    {
+                        name: 'TF-IDF值占比',
+                        type: 'pie',
+                        radius: ['40%', '55%'],
+                        center:['60%','50%'],
+                        data: data_list_2
+                    }
+                ]
+            };
+
+            var myCharted = echarts.init(document.getElementById('pie-area'));
+            //使用制定的配置项和数据显示图表
+            myCharted.setOption(option_1);
+
+
+            var myCharted_2 = echarts.init(document.getElementById('polar-area'));
+            //使用制定的配置项和数据显示图表
+            myCharted_2.setOption(option_2);
+
+
+
+            // search();
+            //
+            $(function ()  {
+                $("#searchjob").click(function () {
+                    var flag = false;
+                    // var flag_hots_xl = false;
+                    // var flag_hots_time = false;
+                    var hots_city = $('#Framework_2').val();
+                    var hots_xl = $('#Framework_3').val();
+                    var hots_time =  $('#Framework_4').val();
+                    // var hots_city = $('#Framework_2').val();
+                    if (hots_city.length === 0){
+                        flag = false;
+                        $("#alert").html('地区必需选择一个选项，不能为空');
+                        $("#alert").fadeIn(1000);
+                        $("#alert").fadeOut(5000);
+                    }
+                    else if(hots_time.length === 0){
+                        flag = false;
+                        $("#alert").html('工作经验需选择一个选项，不能为空');
+                        $("#alert").fadeIn(1000);
+                        $("#alert").fadeOut(5000);
+                    }
+                    else if(hots_xl.length === 0){
+                        flag = false;
+                        $("#alert").html('学历必需选择一个选项，不能为空');
+                        $("#alert").fadeIn(1000);
+                        $("#alert").fadeOut(5000);
+                    }
+                    else{
+                        flag = true;
+                    }
+                    return flag;
+
+                });
+
+            })
+
+
+        });
+
+    </script>
+{% endblock %}

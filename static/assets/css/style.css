@@ -1,0 +1,170 @@
+/**
+ * Author: Kris Olszewski
+ * CodePen: https://codepen.io/KrisOlszewski/full/wBQBNX
+ */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #434A54;
+  font-family: "Open Sans", "Arial", sans-serif;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+}
+
+/**
+ * Component: Dropdown
+ * --------------------------------------------------
+ */
+.c-dropdown {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  margin-top:10px;
+  margin-bottom: 30px;
+  width: 120px;
+  margin-right: 10px;
+}
+
+.c-dropdown__list {
+  margin: 5px 0 0 0;
+  padding: 6px 0;
+  list-style: none;
+  position: absolute;
+  top: 125%;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  border-radius: 3px;
+  background: #fff;
+  -webkit-transition: opacity .25s linear, top .25s linear;
+  transition: opacity .25s linear, top .25s linear;
+  z-index: 999;
+}
+.c-dropdown.is-open .c-dropdown__list {
+  opacity: 1;
+  visibility: visible;
+  top: 100%;
+}
+
+.c-dropdown__item {
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #434A54;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-transition: background-color .25s linear;
+  transition: background-color .25s linear;
+  letter-spacing: 10px;
+}
+.c-dropdown__item:hover {
+  background-color: #E6E9ED;
+}
+
+/**
+ * Component: Button
+ * --------------------------------------------------
+ */
+.c-button {
+  -webkit-appearance: none;
+  margin: 0;
+  border: 0;
+  overflow: visible;
+  font: inherit;
+  text-transform: none;
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.c-button:hover, .c-button:focus {
+  outline: none;
+  text-decoration: none;
+}
+.c-button:not(:disabled) {
+  cursor: pointer;
+}
+
+/**
+ * Component: Button
+ * Modifier: Dropdown
+ * --------------------------------------------------
+ */
+.c-button--dropdown {
+  padding: 6px 34px 6px 12px;
+  background-color: #967ADC;
+  color: #E6E9ED;
+  font-size: 14px;
+  line-height: 20px;
+  min-height: 32px;
+  border-radius: 3px;
+  -webkit-transition: background-color .2s linear;
+  transition: background-color .2s linear;
+  width: 120px;
+}
+.c-button--dropdown:hover {
+  background-color: #AC92EC;
+}
+.c-button--dropdown:after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 11px;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-top-color: #E6E9ED;
+}
+
+
+.card {
+    border-radius: 2px;
+    box-shadow: none;
+    background-color: #fff;
+    margin: 0px;
+    position: relative;
+    z-index: 1;
+    border: 0 none;
+    -webkit-transition: transform 300ms cubic-bezier(0.34, 2, 0.6, 1), box-shadow 200ms ease;
+    -moz-transition: transform 300ms cubic-bezier(0.34, 2, 0.6, 1), box-shadow 200ms ease;
+    -o-transition: transform 300ms cubic-bezier(0.34, 2, 0.6, 1), box-shadow 200ms ease;
+    -ms-transition: transform 300ms cubic-bezier(0.34, 2, 0.6, 1), box-shadow 200ms ease;
+    transition: transform 300ms cubic-bezier(0.34, 2, 0.6, 1), box-shadow 200ms ease;
+    }
+
+.card:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.20);
+    transform: translateY(-10px);
+    -webkit-transform: translateY(-10px);
+    -ms-transform: translateY(-10px);
+    -moz-transform: translateY(-10px);
+    }
+
+.card.no-transition:hover {
+    box-shadow: none;
+    transform: none;
+    -webkit-transform: none;
+    -ms-transform: none;
+    -moz-transform: none;
+    }
+
+.job_style{
+    margin: 0 5px 0 0;
+}

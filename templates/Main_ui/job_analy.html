@@ -1,0 +1,527 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+<!-- Main container starts -->
+<div class="container main-container" id="main-container">
+    <div>
+        <div style="display: flex">
+            <div class="alert alert-primary" role="alert" style="flex: 1">
+                <span>当前岗位：</span><span style="font-weight: 600;">{{titleList[1]}}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div style="opacity: 0">123</div>
+            <div class="alert alert-secondary" role="alert" style="flex: 1">
+                <span>当前城市：</span><span style="font-weight: 600;">{{titleList[0]}}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-12">
+            <div class="shadow-sm border-0 mb-4" style="height: 560px">
+                <div class="card-header border-0 ">
+                    <div class="row">
+                        <div class="col">
+                            <h6 style="font-size: 22px" class="card-title">各个地区薪资柱状图分析<br><small style="font-size: 18px" class="text-template-primary-light">Java</small></h6>
+                        </div>
+                        <div class="col-auto">
+                            <div class=" float-right text-right">
+                                <button class="btn btn-link btn-sm"><i class="material-icons md-24 template-primary">refresh</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <div class="h-320" style="height: 450px">
+                        <canvas id="mixchartfull"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-12">
+            <div class="shadow-sm border-0 mb-4" style="height: 560px">
+                <div class="card-header border-0 ">
+                    <div class="row">
+                        <div class="col">
+                            <h6 style="font-size: 22px" class="card-title">各个公司薪资柱状图分析<br><small style="font-size: 18px" class="text-template-primary-light">Java</small></h6>
+                        </div>
+                        <div class="col-auto">
+                            <div class=" float-right text-right">
+                                <button class="btn btn-link btn-sm"><i class="material-icons md-24 template-primary">refresh</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <div class="h-320" style="height: 450px">
+                        <canvas id="mixchartfull_2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4" style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="pie-area" style="height: 460px;margin-top: 20px">
+                        <!--<div id="pie-area"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4"  style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="polar-area" style="height: 460px;margin-top: 20px">
+                        <!--<canvas id="polar-area"></canvas>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div class="card border-0 shadow-sm overflow-hidden mb-4">
+                <div class="card-body">
+                    <div id="manages" style="height: 500px">
+                        <!--<canvas id="maps" style="height: 800px;width:1200px;background:white;"></canvas>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4" style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="xl" style="height: 460px;margin-top: 20px">
+                        <!--<div id="pie-area"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 col-xl-4"  style="flex: 0 0 50%;max-width: 50%;">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+                    <div id="time" style="height: 460px;margin-top: 20px">
+                        <!--<canvas id="polar-area"></canvas>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- Main container ends -->
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(window).on('load', function () {
+
+            bar();
+
+            function bar() {
+                var city = {{ city|safe }}
+                var allcity_money_list = {{allcity_money_list|safe}}
+                var color = Chart.helpers.color;
+                var barChartData = {
+                    labels: city,
+                    datasets: [{
+                        type: 'bar',
+                        maintainAspectRatio: false,
+                        backgroundColor: '#ff6e73',
+                        borderColor: '#ff6e73',
+                        data: allcity_money_list
+                    }, {
+                        type: 'line',
+                        label: 'Dataset 2',
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(91, 146, 255, 0.18)',
+                        borderColor: '#5B92FF',
+                        data: allcity_money_list
+                    }]
+                };
+
+                // Define a plugin to provide data labels
+
+                var ctx = $("#mixchartfull");
+                window.myBar = new Chart(ctx, {
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        title: {
+                            display: false,
+                            text: 'Chart.js Combo Bar Line Chart',
+
+                        },
+                        legend: {
+                            display: false,
+                            labels: {
+                                fontColor: "#cccccc"
+                            }
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#bbbbbb",
+                                },
+                                gridLines: {
+                                    color: "rgba(0,0,0,0.05)",
+                                    zeroLineColor: "rgba(255,255,255,0.2)"
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "#bbbbbb"
+                                },
+                                gridLines: {
+                                    color: "rgba(0,0,0,0.05)",
+                                    zeroLineColor: "rgba(0,0,0,0.2)"
+                                }
+                            }]
+                        }
+                    }
+                });
+                }
+
+            bar2();
+
+            function bar2() {
+                var allcompannyname_list = {{allcompannyname_list|safe}}
+                var allcompanny_money_list = {{allcompanny_money_list|safe}}
+                var color = Chart.helpers.color;
+                var barChartData = {
+                    labels: allcompannyname_list,
+                    datasets: [{
+                        type: 'bar',
+                        maintainAspectRatio: false,
+                        backgroundColor: '#ffab67',
+                        borderColor: '#ff6e73',
+                        data: allcompanny_money_list
+
+                    }, {
+                        type: 'line',
+                        label: 'Dataset 2',
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(91, 146, 255, 0.18)',
+                        borderColor: '#ff282a',
+                        data: allcompanny_money_list
+                    }]
+                };
+
+                // Define a plugin to provide data labels
+
+                var ctx = $("#mixchartfull_2");
+                window.myBar = new Chart(ctx, {
+                    type: 'bar',
+                    data: barChartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        title: {
+                            display: false,
+                            text: 'Chart.js Combo Bar Line Chart',
+
+                        },
+                        legend: {
+                            display: false,
+                            labels: {
+                                fontColor: "#cccccc"
+                            }
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#bbbbbb",
+                                },
+                                gridLines: {
+                                    color: "rgba(0,0,0,0.05)",
+                                    zeroLineColor: "rgba(255,255,255,0.2)"
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    fontColor: "#bbbbbb"
+                                },
+                                gridLines: {
+                                    color: "rgba(0,0,0,0.05)",
+                                    zeroLineColor: "rgba(0,0,0,0.2)"
+                                }
+                            }]
+                        }
+                    }
+                });
+                }
+
+            var numbersAll = {{numbersAll|safe}}
+            var legend_1_data = []
+            for (var ii=0;ii<numbersAll.length;ii++){
+                legend_1_data.push(numbersAll[ii].name)
+            }
+            option_1 = {
+                title: {
+                    text: '职位标签词频统计',
+                    subtext: 'Java',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: legend_1_data
+                },
+                series: [
+                    {
+                        name: '当前数据',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '50%'],
+                        data: numbersAll,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            var myCharted = echarts.init(document.getElementById('pie-area'));
+            //使用制定的配置项和数据显示图表
+            myCharted.setOption(option_1);
+
+            var tfidf = {{tfidf|safe}}
+            var legend_2_data = [];
+            var nei = [];
+            for (var dd=0 ;dd<tfidf.length;dd++){
+                legend_2_data.push(tfidf[dd].name)
+            }
+            for (var nn=0 ;nn<3;nn++ ){
+                nei.push(tfidf[nn])
+            }
+            option_2 = {
+                title: {
+                    text: '岗位TF-IDF值数据分析展示',
+                    subtext: 'Java',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 10,
+                    data: legend_2_data
+                },
+                series: [
+                    {
+                        name: 'TF-IDF值占比',
+                        type: 'pie',
+                        selectedMode: 'single',
+                        radius: [0, '30%'],
+                        center:['60%','50%'],
+                        label: {
+                            position: 'inner'
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: nei
+                    },
+                    {
+                        name: 'TF-IDF值占比',
+                        type: 'pie',
+                        radius: ['40%', '55%'],
+                        center:['60%','50%'],
+                        data: tfidf
+                    }
+                ]
+            };
+
+            var myCharted_2 = echarts.init(document.getElementById('polar-area'));
+            //使用制定的配置项和数据显示图表
+            myCharted_2.setOption(option_2);
+
+
+            var workneeds = {{workneeds|safe}}
+            var legend_3_data = [];
+            for (var ll=0;ll<workneeds.length;ll++){
+                legend_3_data.push(workneeds[ll].name)
+            }
+
+            option_3 = {
+                title: {
+                    text: '职业要求内容词频统计',
+                    subtext: 'Java',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    left: 'center',
+                    top: 'bottom',
+                    data: legend_3_data
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {show: true},
+                        dataView: {show: true, readOnly: false},
+                        magicType: {
+                            show: true,
+                            type: ['pie', 'funnel']
+                        },
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                series: [
+                    {
+                        name: '半径模式',
+                        type: 'pie',
+                        radius: [35, 190],
+                        center: ['50%', '50%'],
+                        roseType: 'radius',
+                        label: {
+                            show: false
+                        },
+                        emphasis: {
+                            label: {
+                                show: true
+                            }
+                        },
+                        data: workneeds
+                    }
+
+                ]
+            };
+            var myCharted_3 = echarts.init(document.getElementById('manages'));
+            //使用制定的配置项和数据显示图表
+            myCharted_3.setOption(option_3);
+
+
+            var xlradius = {{xlradius|safe}}
+            var legend_4_data = [];
+            for (var xx=0;xx<xlradius.length;xx++){
+                legend_4_data.push(xlradius[xx].name)
+            }
+            option_4 = {
+                title: {
+                    text: '学历百分比统计',
+                    subtext: 'Java',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: legend_4_data
+                },
+                series: [
+                    {
+                        name: '当前数据',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '50%'],
+                        data: xlradius,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            var myCharted4 = echarts.init(document.getElementById('xl'));
+            //使用制定的配置项和数据显示图表
+            myCharted4.setOption(option_4);
+
+
+
+            var timeradius = {{timeradius|safe}}
+            var legend_5_data = [];
+            for (var tt=0;tt<timeradius.length;tt++){
+                legend_5_data.push(timeradius[tt].name)
+            }
+            option_4 = {
+                title: {
+                    text: '工作经验百分比统计',
+                    subtext: 'Java',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: legend_5_data
+                },
+                series: [
+                    {
+                        name: '当前数据',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '50%'],
+                        data: timeradius,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            var myCharted5 = echarts.init(document.getElementById('time'));
+            //使用制定的配置项和数据显示图表
+            myCharted5.setOption(option_4);
+
+        });
+
+    </script>
+{% endblock %}

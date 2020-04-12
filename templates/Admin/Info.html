@@ -1,0 +1,160 @@
+{% extends 'Main_ui/base.html' %}
+
+{% block title %}
+    招聘信息网
+{% endblock %}
+
+{% block body %}
+
+    <!-- Main container starts -->
+    <div class="container main-container" style="max-width: 1000px" id="main-container">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header p-0 overflow-hidden">
+                <div class="row no-gutters align-items-center position-relative gradient-pink">
+                    <figure class="background opac">
+                        <img src="../../static/assets/img/background-part.png" alt="" class="" >
+                    </figure>
+                    <div class="container p-4">
+                        <div class="row align-items-center ">
+                            <div class="col-12 col-sm-auto text-center">
+                                <a style="cursor: pointer">
+                                    <figure class="avatar avatar-150 rounded-circle mx-auto my-3">
+                                        <img src="{{ imgpath }}" alt="">
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="col-12 col-sm text-center text-sm-left text-white">
+                                <h3 class="mb-0" id="uname">{{uname}}</h3>
+                                <p class="">普通用户</p>
+                                <p ><a href="/" type="button" class="mb-2 mr-2 btn-rounded-circle shadow btn btn-primary"><i style="margin-top: 5px;" class="material-icons">home</i></a><i class="material-icons vm mr-2 fs15">mail_outline</i><span id="email">{{email}}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p style="font-size: 25px;margin-bottom: 50px;margin-top: 20px">留言展示板</p>
+                <div style="width: 80%;margin: 0 auto">
+                    <textarea class="form-control" rows="15" id="editor2"></textarea>
+                    <button type="button" id="submit" class="mb-2 btn btn-outline-primary btn-rounded" style="margin-top: 25px;padding-right: 20px;padding-left: 20px;">提&nbsp交</button>
+                    <hr style="margin-top: 25px">
+                </div>
+
+                <div style="width: 80%;margin: 0 auto">
+                    <h6 style="margin-top: 50px!important;font-size: 20px;" class="page-subtitle mt-0"><span>在线留言</span></h6>
+                    {%  for i in message1 %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header border-bottom">
+                            <div class="media">
+                                <figure class="avatar avatar-40 mr-2">
+                                    <img src="{{ i[2] }}" alt="Generic placeholder image">
+                                </figure>
+                                <div class="media-body" style="flex: none">
+                                    <h6 class="mb-1" style="text-align: left">{{i[1]}}</h6>
+                                    <p class="mb-0 text-template-primary-light small">{{ i[3] }} | 公开</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body message_list" style="text-align: left;margin: 0 20px">
+                            <!--<p class="mb-0 text-mute">{{i[4]}}</p>-->
+                        </div>
+                        <div class="card-footer border-top py-2">
+                            <div class="row">
+                                <div class="col">
+                                    <button id="{{i[0]}}" class="btn btn-link btn-sm text-template-primary-light changered"><i style="color:grey!important;" class="material-icons text-danger">favorite_border</i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+                    <!--弹窗-->
+    <div class="alert alert-danger" id="alert" style="width: 300px;text-align: center;position: fixed;z-index: 99;top: 100px;left: 40%;display: none"></div>
+    <!-- Main container ends -->
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+
+        var f=document.querySelectorAll('.message_list');
+        console.log(f);
+        var messages = {{message1|safe}}
+        for (var i=0;i<f.length;i++){
+            f[i].innerHTML = messages[i][4];
+        }
+
+
+        /* classic CK Editor */
+        let editor;
+        ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .then( newEditor => {
+                editor = newEditor;
+                } )
+            .catch(error => {
+                console.error(error);
+            });
+
+
+            document.querySelector( '#submit' ).addEventListener( 'click', () => {
+                const editorData = editor.getData();
+                console.log(editorData);
+                if (editorData.length === 0){
+                    $("#alert").html('文本框为空!');
+                    $("#alert").fadeIn(1000);
+                    $("#alert").fadeOut(4000);
+                }
+                else if (editorData.length  > 3500){
+                    $("#alert").html('最大输入文字不能超过3500个!');
+                    $("#alert").fadeIn(1000);
+                    $("#alert").fadeOut(4000);
+                }
+                else{
+                    var data_data = JSON.stringify({'message':editorData});
+                    $.ajax({
+                        type:'POST',
+                        contentType:'application/json;charset=utf-8',
+                        dataType:'json',
+                        url:'/admin/sendmessage',
+                        data:data_data,
+                        success:function (data) {
+                            if (data.err===0){
+                                $(".ck-editor__editable_inline p").html('');
+                                $("#alert").html('留言发布成功!');
+                                $("#alert").fadeIn(1000);
+                                $("#alert").fadeOut(4000);
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },3000);
+                            }
+                            else{
+                                $("#alert").html(data.err);
+                                $("#alert").fadeIn(1000);
+                                $("#alert").fadeOut(4000);
+                            }
+                        },
+                        error:function () {}
+                    })
+                }
+            });
+
+        $(".changered").click(function () {
+            var a = $(this).attr('id');
+            var d = "#" + a + " "+ "i";
+            $(d).css('color','');
+        })
+
+    })
+</script>
+
+{% endblock %}

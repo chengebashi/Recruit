@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}  {% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="../../static/assets/css/bootstrap.css" rel="stylesheet" id="stylelink2">
+    <link href="../../static/assets/css/style-darkblue-dark.css" rel="stylesheet" id="stylelink">
+    <link rel="shortcut icon" href="../../static/assets/img/logoicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="../../static/assets/vendor/material-icons/material-icons.css" rel="stylesheet">
+    <link href="../../static/assets/vendor/flags/css/flag-icon.min.css" rel="stylesheet">
+    <link href="../../static/assets/vendor/daterangepicker-master/daterangepicker.css" rel="stylesheet">
+</head>
+<!--<body>-->
+    {% block body %}
+
+
+    {% endblock %}
+    <script src="../../static/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="../../static/assets/js/popper.min.js"></script>
+    <script src="../../static/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../static/assets/vendor/cookie/jquery.cookie.js"></script>
+    <script src="../../static/assets/vendor/daterangepicker-master/moment.min.js"></script>
+    <script src="../../static/assets/vendor/daterangepicker-master/daterangepicker.js"></script>
+    <script src="../../static/assets/js/main.js"></script>
+    <script src="../../static/assets/js/style-picker.js"></script>
+    <!--<script>-->
+        <!--'use strict';-->
+        <!--$(document).ready(function() {-->
+
+        <!--});-->
+    <!--</script>-->
+<!--</body>-->
+    {% block login %}
+    {% endblock %}
+</html>
